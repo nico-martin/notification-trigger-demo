@@ -3,7 +3,7 @@ const $error = document.querySelector('#error');
 
 try {
   if (!('serviceWorker' in navigator) || !('showTrigger' in Notification.prototype)) {
-    throw 'ServiceWorker or Notification Triggers API is not supported'
+    throw 'ServiceWorker or Notification Trigger API is not supported'
   }
 
   // register the ServiceWorker
