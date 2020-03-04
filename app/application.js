@@ -1,4 +1,5 @@
 const $button = document.querySelector('#notification-button');
+const $cancelButton = document.querySelector('#notification-cancel');
 const $error = document.querySelector('#error');
 
 try {
@@ -9,18 +10,7 @@ try {
   // register the ServiceWorker
   navigator.serviceWorker.register('service-worker.js');
 
-  // listen to the message event.
-  navigator.serviceWorker.addEventListener('message', async event => {
-    if (event.data.type === 'notification-clicked' || event.data.type === 'notification-closed') {
-      console.log(
-        event.data.type === 'notification-clicked'
-          ? 'Notification "Demo Push Notification" clicked.'
-          : 'Notification "Demo Push Notification" closed.'
-      );
-    }
-  });
-
-  // button click
+  // schedule notification
   $button.onclick = async () => {
     const reg = await navigator.serviceWorker.getRegistration();
     Notification.requestPermission().then(permission => {
@@ -45,6 +35,20 @@ try {
       }
     });
   };
+
+  // cancel notifications
+  $cancelButton.onclick = async () => {
+    const reg = await navigator.serviceWorker.getRegistration();
+    const notifications = await reg.getNotifications({
+      includeTriggered: true
+    });
+    notifications.forEach(notification => notification.close());
+    alert(`${notifications.length} notification(s) cancelled`);
+  };
+
+  // listen to the postMessage Event
+  navigator.serviceWorker.addEventListener('message', event => console.log(event.data));
+
 } catch (e) {
   $button.style.display = 'none';
   $error.style.display = 'block';
