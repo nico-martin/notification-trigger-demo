@@ -7,6 +7,12 @@ try {
     throw 'ServiceWorker or Notification Trigger API is not supported'
   }
 
+  function pad(num, size = 2) {
+    let s = num + '';
+    while (s.length < size) s = '0' + s;
+    return s;
+  }
+
   // register the ServiceWorker
   navigator.serviceWorker.register('service-worker.js');
 
@@ -18,11 +24,12 @@ try {
         alert('you need to allow push notifications');
       } else {
         const timestamp = new Date().getTime() + 10 * 1000;
+        const scheduledTime = new Date(timestamp);
         reg.showNotification(
-          'Demo Push Notification',
+          'Scheduled Push Notification',
           {
             tag: timestamp, // a unique ID
-            body: 'Hello World', // content of the push notification
+            body: 'Hi there, it\'s ' + pad(scheduledTime.getHours()) + ':' + pad(scheduledTime.getMinutes()), // content of the push notification
             showTrigger: new TimestampTrigger(timestamp), // set the time for the push notification
             data: {
               url: window.location.href, // pass the current url to the notification
